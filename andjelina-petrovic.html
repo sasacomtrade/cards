@@ -98,6 +98,9 @@
   footer .links{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.5)}
   footer .links a{color:var(--orange);font-size:14px;font-weight:500}
   footer .copy{color:rgba(255,255,255,.6);font-size:12px;margin-top:16px}
+  .vcf-alt{display:none;text-align:center;font-size:13px;color:var(--grey);margin-top:2px}
+  .vcf-alt a{color:var(--white);text-decoration:underline;text-underline-offset:3px}
+  .is-android .vcf-alt{display:block}
 </style>
 </head>
 <body>
@@ -120,10 +123,11 @@
 
     <div class="actions">
       <!-- .vcf mora biti u istom folderu kao ova stranica -->
-      <a class="btn btn-primary" href="andjelina-petrovic.vcf" download>
+      <a class="btn btn-primary" id="save-contact" href="andjelina-petrovic.vcf">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
         Save contact
       </a>
+      <p class="vcf-alt">Want the photo too? <a href="andjelina-petrovic.vcf">Download contact file</a></p>
       <a class="btn btn-ghost" href="https://www.linkedin.com/in/andjelina-petrovic/" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
         Connect on LinkedIn
@@ -169,5 +173,30 @@
     <p class="copy">© Comtrade Fast Forward</p>
   </footer>
 </main>
+<script>
+(function(){
+  // Android: open the native "New contact" screen pre-filled, instead of downloading a .vcf
+  if(!/Android/i.test(navigator.userAgent)) return;
+  document.documentElement.classList.add('is-android');
+  var c={
+    name:'Anđelina Petrović',
+    phone:'+41415617007',
+    email:'Andjelina.Petrovic@comtrade.com',
+    company:'Comtrade Fast Forward',
+    job_title:'Director, Communications & Business Development',
+    postal:'Grafenauweg 8, 6300 Zug, Switzerland'
+  };
+  var vcf=new URL('andjelina-petrovic.vcf',location.href).href;
+  var e=encodeURIComponent;
+  var url='intent:#Intent;action=android.intent.action.INSERT;type=vnd.android.cursor.dir/contact'+
+    ';S.name='+e(c.name)+';S.phone='+e(c.phone)+';i.phone_type=3'+
+    ';S.email='+e(c.email)+';i.email_type=2'+
+    ';S.company='+e(c.company)+';S.job_title='+e(c.job_title)+
+    ';S.postal='+e(c.postal)+';i.postal_type=2'+
+    ';S.browser_fallback_url='+e(vcf)+';end';
+  var b=document.getElementById('save-contact');
+  if(b) b.href=url;
+})();
+</script>
 </body>
 </html>
